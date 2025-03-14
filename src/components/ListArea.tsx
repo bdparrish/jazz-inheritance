@@ -33,7 +33,7 @@ export function ListArea() {
       {
         content: ''
       },
-      { owner: group },
+      { owner: me },
     )
   }
 
@@ -58,7 +58,7 @@ export function ListArea() {
       </div>
 
       {/* Message Input */}
-      <CreateItemInput id={me.root.currentList.draftItem!.id} onSave={sendItem} />
+      <CreateItemInput id={me.root.currentList.draftItem?.id} onSave={sendItem} />
     </div>
   );
 

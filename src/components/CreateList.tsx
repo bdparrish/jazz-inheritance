@@ -29,9 +29,9 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
       {
         content: ''
       },
-      { owner: group },
+      { owner: me },
     )
-    draft.items = ListOfItems.create([])
+    draft.items = ListOfItems.create([], { owner: group })
 
     me!.root!.lists!.push(draft as List)
     me!.root!.currentList = draft as List
@@ -39,7 +39,7 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
       {
         name: ''
       },
-      { owner: group },
+      { owner: me },
     );
 
     close()

@@ -50,9 +50,8 @@ export function ListSidebar() {
         {me.root.lists.length > 0 ? (
           me.root.lists.map((list) =>
             list ? (
-              <>
+              <div key={list.id}>
                 <ListButton
-                  key={list.id}
                   name={list.name}
                   isActive={list.id == me!.root!.currentList!.id}
                   id={list.id}
@@ -64,7 +63,7 @@ export function ListSidebar() {
                 >
                   Invite
                 </button>
-              </>
+              </div>
             ) : null,
           )
         ) : (

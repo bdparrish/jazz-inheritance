@@ -19,7 +19,6 @@ import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import Mention from '@tiptap/extension-mention'
-import HardBreak from '@tiptap/extension-hard-break'
 import './tip-tap.css'
 
 export default function ItemInput({ item, onSend }: { item: Item | DraftItem, onSend?: () => void }) {

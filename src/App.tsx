@@ -6,7 +6,10 @@ export function App() {
         root: { lists: [{}] },
     });
 
-    if (!me?.root?.lists) return
+    if (!me?.root?.lists) {
+        console.debug("App - lists are not set")
+        return
+    }
 
     return (
         <div className="h-screen flex flex-col overflow-hidden bg-gray-100">

@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client'
 import { App } from './App.tsx'
 import './index.css'
 import { JazzProvider, PasskeyAuthBasicUI, useAcceptInvite } from "jazz-react"
-import { LoopAccount, List } from './schema.tsx'
+import { LoopAccount, List, DraftItem } from './schema.tsx'
 import { createHashRouter, RouterProvider, useNavigate } from 'react-router'
 import { apiKey } from './apiKey.ts'
-import { co, ID } from 'jazz-tools'
+import { co, Group, ID } from 'jazz-tools'
+import { JazzInspector } from 'jazz-inspector'
 
 function Router() {
   const router = createHashRouter([
@@ -38,7 +39,7 @@ function AcceptInvite() {
     invitedObjectSchema: List,
     onAccept: useCallback(
       async (listID: ID<List>) => {
-        const list = await List.load(listID, {})
+        const list = await List.load(listID, { items: [{}] })
 
         const me = await LoopAccount.getMe().ensureLoaded({
           root: {},
@@ -54,6 +55,12 @@ function AcceptInvite() {
           if (!found && list) {
             me.root.lists!.push(list!)
             me.root.currentList = list
+            me.root.draftItem = DraftItem.create(
+              {
+                content: ''
+              },
+              { owner: Group.create({ owner: me }) }
+            )
           }
 
           navigate("/")
@@ -75,8 +82,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <JazzProvider
       AccountSchema={LoopAccount}
       sync={{
-        peer: `ws://localhost:4200/?key=${apiKey}`,
-        when: "signedUp",
+        peer: `ws://localhost:4200/?key=${apiKey}`
       }}
     >
       <PasskeyAuthBasicUI appName="Loop">

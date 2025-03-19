@@ -9,13 +9,16 @@ export function ListArea() {
   const { me } = useAccount({
     root: {
       currentList: {
-        items: [{}],
-        draftItem: {}
-      }
+        items: [{}]
+      },
+      draftItem: {}
     },
   });
 
-  if (!me?.root?.currentList?.items) return
+  if (!me?.root?.currentList?.items) {
+    console.debug("ListArea - items are not set")
+    return
+  }
 
   const sendItem = (draft: DraftItem) => {
     const validation = draft.validate()
@@ -24,23 +27,24 @@ export function ListArea() {
     }
 
     const listGroup = me.root.currentList?._owner as Group
-    const group = Group.create()
-    group.extend(listGroup)
+
+    const draftGroup = draft._owner as Group
+    draftGroup.extend(listGroup)
 
     me.root.currentList!.items!.push(draft as Item)
 
-    me.root.currentList!.draftItem = DraftItem.create(
+    me.root.draftItem = DraftItem.create(
       {
         content: ''
       },
-      { owner: me },
+      { owner: Group.create({ owner: me }) },
     )
   }
 
   return (
     <div className="flex-1 flex flex-col bg-white">
       {/* Item List */}
-      <div className="flex-1 overflow-y-auto px-6 py-4" style={{ maxHeight: "calc(100vh - 220px)" }}>
+      <div className="flex-1 overflow-y-auto px-6 py-4" style={{ maxHeight: "calc(100vh - 150px)" }}>
         {me.root.currentList.items.length > 0 ? (
           me.root.currentList.items.map((item: co<Item | null>) => {
             if (!item) return null;
@@ -58,7 +62,7 @@ export function ListArea() {
       </div>
 
       {/* Message Input */}
-      <CreateItemInput id={me.root.currentList.draftItem?.id} onSave={sendItem} />
+      <CreateItemInput id={me.root.draftItem!.id} onSave={sendItem} />
     </div>
   );
 
@@ -67,7 +71,10 @@ export function ListArea() {
 function CreateItemInput({ id, onSave }: { id: ID<DraftItem>, onSave: (draft: DraftItem) => void }) {
   const draft = useCoState(DraftItem, id, {});
 
-  if (!draft) return;
+  if (!draft) {
+    console.debug("CreateItemInput - draft is not set")
+    return
+  }
 
   const sendMessage = () => {
     onSave(draft);

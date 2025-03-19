@@ -12,7 +12,10 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
 
   const [errors, setErrors] = useState<string[]>([]);
 
-  if (!me?.root?.draftList) return;
+  if (!me?.root?.draftList) {
+    console.debug("CreateList - draftList is not set")
+    return
+  }
 
   if (!isOpen) return null
 
@@ -23,15 +26,13 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
       return;
     }
 
-    const group = Group.create()
+    const draftGroup = draft._owner as Group
+    const itemsGroup = Group.create({ owner: me })
+    itemsGroup.extend(draftGroup)
 
-    draft.draftItem = DraftItem.create(
-      {
-        content: ''
-      },
-      { owner: me },
-    )
-    draft.items = ListOfItems.create([], { owner: group })
+    const meGroup = Group.create({ owner: me })
+
+    draft.items = ListOfItems.create([], { owner: itemsGroup })
 
     me!.root!.lists!.push(draft as List)
     me!.root!.currentList = draft as List
@@ -39,8 +40,14 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
       {
         name: ''
       },
-      { owner: me },
-    );
+      { owner: meGroup },
+    )
+    me.root.draftItem = DraftItem.create(
+      {
+        content: ''
+      },
+      { owner: meGroup },
+    )
 
     close()
   };

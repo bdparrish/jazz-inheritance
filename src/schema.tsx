@@ -25,15 +25,11 @@ export class ListOfItems extends CoList.Of(co.ref(Item)) { }
 export class List extends CoMap {
     name = co.string;
     items = co.ref(ListOfItems)
-    draftItem = co.ref(DraftItem)
-    currentItem = co.ref(Item)
 }
 
 export class DraftList extends CoMap {
     name = co.optional.string
     items = co.optional.ref(ListOfItems)
-    draftItem = co.optional.ref(DraftItem)
-    currentItem = co.optional.ref(Item)
 
     validate() {
         const errors: string[] = [];
@@ -53,6 +49,7 @@ export class ListOfLists extends CoList.Of(co.ref(List)) { }
 export class LoopAccountRoot extends CoMap {
     lists = co.ref(ListOfLists);
     draftList = co.ref(DraftList);
+    draftItem = co.ref(DraftItem)
     currentList = co.optional.ref(List)
 }
 
@@ -60,18 +57,24 @@ export class LoopAccount extends Account {
     root = co.ref(LoopAccountRoot);
 
     async migrate() {
+        const meGroup = Group.create({ owner: this })
+
         if (!this._refs.root) {
             this.root = LoopAccountRoot.create(
                 {
                     draftList: DraftList.create(
                         {},
-                        {
-                            owner: Group.create({ owner: this }),
-                        }
+                        { owner: meGroup }
                     ),
-                    lists: ListOfLists.create([])
+                    draftItem: DraftItem.create(
+                        {
+                            content: '',
+                        },
+                        { owner: meGroup }
+                    ),
+                    lists: ListOfLists.create([], { owner: meGroup })
                 },
-                { owner: this },
+                { owner: meGroup },
             );
         }
     }

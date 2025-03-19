@@ -16,7 +16,10 @@ export function ListSidebar() {
 
   const [isChannelModalOpen, setIsChannelModalOpen] = useState(false);
 
-  if (!me?.root?.lists) return
+  if (!me?.root?.lists) {
+    console.debug("ListSidebar - lists are not set")
+    return
+  }
 
   const setCurrentList = (e: React.MouseEvent<HTMLButtonElement>): void => {
     const foundList = me?.root?.lists.find((list: List) => {
@@ -57,12 +60,16 @@ export function ListSidebar() {
                   id={list.id}
                   onClick={setCurrentList}
                 />
-                <button
-                  className="w-full flex items-center justify-center bg-indigo-600 text-white rounded-md px-3 py-2 hover:bg-indigo-700 transition-colors"
-                  onClick={createInvite}
-                >
-                  Invite
-                </button>
+                <span>{list._owner.members.length}</span>
+                {me.canAdmin(list) ? (
+                  <button
+                    className="w-full flex items-center justify-center bg-indigo-600 text-white rounded-md px-3 py-2 hover:bg-indigo-700 transition-colors"
+                    onClick={createInvite}
+                  >
+                    Invite
+                  </button>
+                ) : null
+                }
               </div>
             ) : null,
           )

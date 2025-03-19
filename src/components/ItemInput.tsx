@@ -19,12 +19,17 @@ import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import Mention from '@tiptap/extension-mention'
+import HardBreak from '@tiptap/extension-hard-break'
+import { Extension } from '@tiptap/core'
+import { Plugin, PluginKey } from 'prosemirror-state'
 import './tip-tap.css'
 
 export default function ItemInput({ item, onSend }: { item: Item | DraftItem, onSend?: () => void }) {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      HardBreak,
+      NoNewLine,
       Link.configure({
         openOnClick: false,
       }),
@@ -193,3 +198,25 @@ const FormatButton = ({
     {icon}
   </button>
 );
+
+const NoNewLine = Extension.create({
+  name: 'no_new_line',
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey('eventHandler'),
+        props: {
+          handleKeyDown: (view, event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              console.log("enter pressed")
+              return true
+            }
+          }
+          // … and many, many more.
+          // Here is the full list: https://prosemirror.net/docs/ref/#view.EditorProps
+        },
+      }),
+    ]
+  },
+})

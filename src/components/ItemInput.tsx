@@ -25,7 +25,6 @@ export default function ItemInput({ item, onSend }: { item: Item | DraftItem, on
   const editor = useEditor({
     extensions: [
       StarterKit,
-      HardBreak,
       Link.configure({
         openOnClick: false,
       }),

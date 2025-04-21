@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add this to your global CSS file or as a style tag in your HTML */
+
+input {
+  color: black;
+}

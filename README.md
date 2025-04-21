@@ -1,1 +1,1 @@
-# jazz-inheritance
+# vite-ts-react-tailwind

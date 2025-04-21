@@ -24,11 +24,6 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
   const onSave = (name: string) => {
     const listGroup = Group.create({ owner: me })
 
-    const list = List.create({
-      name,
-      items: ListOfItems.create([], listGroup)
-    }, { owner: listGroup })
-
     const item = Item.create(
       {
         name: 'todo',
@@ -36,7 +31,10 @@ export function CreateList({ isOpen, close }: { isOpen: boolean, close: () => vo
       { owner: listGroup }
     )
 
-    list.items = ListOfItems.create([list], { owner: listGroup })
+    const list = List.create({
+      name,
+      items: ListOfItems.create([item], { owner: listGroup })
+    }, { owner: listGroup })
 
     me.root!.lists!.push(list)
     me.root!.currentList = list

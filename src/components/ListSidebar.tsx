@@ -4,16 +4,22 @@ import {
 import { useState } from "react";
 import { useAccount } from "jazz-react";
 import { Item } from "../schema";
-import { ID } from "jazz-tools";
+import { co, ID } from "jazz-tools";
 import { CreateList } from "./CreateItem";
 
 export function ListSidebar() {
   const { me } = useAccount({
-    root: {
-      lists: [{
-        items: []
-      }]
-    },
+    resolve: {
+      root: {
+        lists: {
+          $each: {
+            items: {
+              $each: true
+            }
+          }
+        }
+      },
+    }
   });
 
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
@@ -23,8 +29,8 @@ export function ListSidebar() {
   }
 
   const setCurrentItem = (e: React.MouseEvent<HTMLButtonElement>): void => {
-    const foundItem = me.root.currentList!.items!.find((item: Item) => {
-      if (item.id == e?.currentTarget.dataset.id) {
+    const foundItem = me.root.currentList!.items!.find((item: co<Item | null>) => {
+      if (item?.id == e?.currentTarget.dataset.id) {
         return item
       }
     })

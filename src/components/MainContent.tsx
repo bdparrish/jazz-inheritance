@@ -4,9 +4,11 @@ import { ListSidebar } from './ListSidebar';
 
 export function MainContent() {
   const { me } = useAccount({
-    root: {
-      currentList: {}
-    },
+    resolve: {
+      root: {
+        currentList: {}
+      },
+    }
   });
 
   const containerRef = useRef<HTMLDivElement>(null);

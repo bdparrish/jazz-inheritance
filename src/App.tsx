@@ -6,7 +6,13 @@ import { NavigationBar } from "./components/NavigationBar";
 
 export function App() {
     const { me } = useAccount({
-        root: { lists: [{}] },
+        resolve: {
+            root: { 
+                lists: {
+                    $each: true
+                } 
+            },
+        }
     });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,6 +37,8 @@ export function App() {
 
     return (
         <div className="h-screen flex flex-col overflow-hidden bg-gray-100">
+            <NavigationBar />
+
             <MainContent />
         </div>
     )
